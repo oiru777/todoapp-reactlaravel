@@ -1,0 +1,296 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  Box,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  Button,
+  ListItemAvatar,
+  Avatar,
+  IconButton,
+  Modal,
+  TextField,
+  Fab,
+} from "@mui/material";
+import FolderIcon from "@mui/icons-material/Folder";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from '@mui/icons-material/Add';
+import NavigationIcon from '@mui/icons-material/Navigation';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { ja } from 'date-fns/locale';
+
+interface Todo {
+  id: number;
+  content: string;
+  due_date: string;
+}
+
+const ShowTodoList: React.FC = () => {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newContent, setNewContent] = useState("");
+  const [newDueDate, setNewDueDate] = useState<Date | null>(new Date());
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  const fetchTodos = async () => {
+    try {
+      const res = await axios.get("/api/todo");
+      setTodos(res.data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEdit = (todo: Todo) => {
+    setEditingTodo(todo);
+    setNewContent(todo.content);
+    setNewDueDate(new Date(todo.due_date));
+  };
+
+  const handleUpdate = async () => {
+    if (!editingTodo) return;
+    try {
+      await axios.put(`/api/todo/${editingTodo.id}`, {
+        content: newContent,
+        due_date: newDueDate ? newDueDate.toISOString().split("T")[0] : null,
+      });
+      fetchTodos();
+      setEditingTodo(null);
+      setNewContent("");
+      setNewDueDate(null);
+    } catch (e) {
+      console.error("更新失敗:", e);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await axios.delete(`/api/todo/${id}`);
+      setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id));
+    } catch (e) {
+      console.error("削除失敗:", e);
+    }
+  };
+
+  const handleAddTodo = async () => {
+    if (!newContent || !newDueDate) {
+      setMessage("内容と締切日を入力してください");
+      return;
+    }
+    try {
+      await axios.post("/api/todo", {
+        content: newContent,
+        due_date: newDueDate.toISOString().split("T")[0],
+      });
+      setMessage("追加しました");
+      setNewContent("");
+      setNewDueDate(new Date());
+      setShowAddForm(false);
+      fetchTodos();
+    } catch (e) {
+      setMessage("追加失敗");
+      console.error(e);
+    }
+  };
+
+  if (loading) return <Typography>Loading...</Typography>;
+
+  // 締切日でソート
+  const sortedTodos = [...todos].sort((a, b) => {
+    return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+  });
+
+  return (
+    <>
+      <Box sx={{ maxWidth: 500, mx: "auto", mt: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          ToDo リスト
+        </Typography>
+
+        {editingTodo && (
+          <Box sx={{ mb: 2 }}>
+            <TextField
+              fullWidth
+              margin="normal"
+              value={newContent}
+              onChange={(e) => setNewContent(e.target.value)}
+            />
+            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ja}>
+              <DatePicker
+                label="締切日"
+                value={newDueDate}
+                onChange={(date) => setNewDueDate(date)}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    margin: "normal",
+                  },
+                }}
+              />
+            </LocalizationProvider>
+            <Box sx={{ mt: 1, display: "flex", gap: 1 }}>
+              <Button variant="contained" color="primary" onClick={handleUpdate} fullWidth>
+                保存
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => {
+                  setEditingTodo(null);
+                  setNewContent("");
+                  setNewDueDate(null);
+                }}
+                fullWidth
+              >
+                キャンセル
+              </Button>
+            </Box>
+          </Box>
+        )}
+
+        <List>
+          {sortedTodos.map((todo) => {
+            const today = new Date();
+            const dueDate = new Date(todo.due_date);
+            const diffTime = dueDate.getTime() - today.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const diffText =
+              diffDays < 0 ? `${Math.abs(diffDays)}日過ぎました` : `あと${diffDays}日`;
+
+            return (
+              <ListItem
+                key={todo.id}
+                secondaryAction={
+                  <>
+                    <IconButton edge="end" aria-label="edit" onClick={() => handleEdit(todo)}>
+                      ✏️
+                    </IconButton>
+                    <> </>
+                    <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(todo.id)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </>
+                }
+              >
+                <ListItemAvatar>
+                  <Avatar>
+                    <FolderIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={todo.content}
+                  secondary={`締切: ${dueDate.toLocaleDateString("ja-JP")} （${diffText}）`}
+                />
+              </ListItem>
+            );
+          })}
+        </List>
+      </Box>
+
+      {/* 画面下のFab */}
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          p: 2,
+          zIndex: 1300,
+          display: "flex",
+          justifyContent: "center",
+          "& > :not(style)": { m: 1 },
+        }}
+      >
+        <Fab color="primary" aria-label="add" onClick={() => {
+          setShowAddForm(true);
+          setNewContent("");
+          setNewDueDate(new Date());
+          setMessage("");
+        }}>
+          <AddIcon />
+        </Fab>
+        <Fab variant="extended">
+          <NavigationIcon sx={{ mr: 1 }} />
+          タグ検索
+        </Fab>
+      </Box>
+
+      {/* 追加フォームモーダル */}
+      <Modal open={showAddForm} onClose={() => setShowAddForm(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            p: 4,
+            borderRadius: 2,
+            boxShadow: 24,
+            width: 320,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+        >
+          <Typography variant="h6">新しいToDoを追加</Typography>
+
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ja}>
+            <DatePicker
+              label="締切日"
+              value={newDueDate}
+              onChange={(date) => setNewDueDate(date)}
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  margin: "normal",
+                },
+              }}
+            />
+          </LocalizationProvider>
+
+          <TextField
+            label="タスクを入力"
+            value={newContent}
+            onChange={(e) => setNewContent(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+
+          <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
+            <Button variant="contained" onClick={handleAddTodo} fullWidth>
+              追加
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => setShowAddForm(false)}
+              fullWidth
+            >
+              キャンセル
+            </Button>
+          </Box>
+
+          {message && (
+            <Typography color="error" variant="body2">
+              {message}
+            </Typography>
+          )}
+        </Box>
+      </Modal>
+    </>
+  );
+};
+
+export default ShowTodoList;
