@@ -95,6 +95,10 @@ const ShowTodoList: React.FC = () => {
       await axios.post("/api/todo", {
         content: newContent,
         due_date: newDueDate.toISOString().split("T")[0],
+        tags: newTag
+        .split(",")                   // カンマで区切って配列に
+        .map(tag => tag.trim())       // 空白を除去
+        .filter(tag => tag.length > 0) // 空文字を除去
       });
       setMessage("追加しました");
       setNewContent("");
@@ -272,8 +276,8 @@ const ShowTodoList: React.FC = () => {
           />
           <TextField
             label="タグを入力"
-            value={newTag}
-            onChange={(e) => setNewTag(e.target.value)}
+            value={newTags}
+            onChange={(e) => setNewTags(e.target.value)}
             fullWidth
             margin="normal"
           />
