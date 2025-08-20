@@ -19,6 +19,7 @@ import FolderIcon from "@mui/icons-material/Folder";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
+import HomeIcon from '@mui/icons-material/Home';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -262,6 +263,10 @@ const ShowTodoList: React.FC = () => {
           setMessage("");
         }}>
           <AddIcon />
+        </Fab>
+        <Fab variant="extended" onClick={() => navigate("/show")}>
+        <HomeIcon sx={{ mr: 1 }} />
+        Home
         </Fab>
       </Box>
 
