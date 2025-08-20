@@ -36,7 +36,7 @@ const ShowTodoList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newContent, setNewContent] = useState("");
-  const [newTag, setNewTag] = useState("");
+  const [newTags, setNewTags] = useState("");
   const [newDueDate, setNewDueDate] = useState<Date | null>(new Date());
   const [message, setMessage] = useState("");
 
