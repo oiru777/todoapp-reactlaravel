@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TodoController;
+use App\Http\Controllers\TagController;
 
 
 // Todo APIエンドポイント
@@ -14,6 +15,9 @@ Route::get('/api/todo', [TodoController::class, 'index']);
 Route::delete('api/todo/{id}', [TodoController::class, 'destroy']);
 // 更新
 Route::put('api/todo/{id}', [TodoController::class, 'update']);
+
+// タグ検索
+Route::get('/api/tag/{tag}/todos', [TagController::class, 'getTodosByTag']);
 
 
 // フロントエンドのすべてのリクエストをキャッチするルート

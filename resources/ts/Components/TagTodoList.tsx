@@ -25,6 +25,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { ja } from 'date-fns/locale';
 import '../../css/app.css';
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 
 interface Tag {
@@ -39,7 +40,8 @@ interface Todo {
   tags?: Tag[];
 }
 
-const ShowTodoList: React.FC = () => {
+const TagTodoList: React.FC = () => {
+  const { tagName } = useParams<{ tagName: string }>();  // URLパラメータ取得
   const [todos, setTodos] = useState<Todo[]>([]);
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [loading, setLoading] = useState(true);
@@ -49,6 +51,7 @@ const ShowTodoList: React.FC = () => {
   const [newDueDate, setNewDueDate] = useState<Date | null>(new Date());
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchTodos();
@@ -60,7 +63,8 @@ const ShowTodoList: React.FC = () => {
   };
   const fetchTodos = async () => {
     try {
-      const res = await axios.get("/api/todo");
+      const res = await axios.get(`/api/tag/${tagName}/todos`);
+      console.log("タグに対応するTodo一覧", res.data); // ← ここで中身を確認
       setTodos(res.data);
     } catch (e) {
       console.error(e);
@@ -338,4 +342,4 @@ const ShowTodoList: React.FC = () => {
   );
 };
 
-export default ShowTodoList;
+export default TagTodoList;
