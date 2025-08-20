@@ -12,7 +12,10 @@ class TodoController extends Controller
     {
         // リクエストのバリデーション: 'content' フィールドが必須であり、文字列で、最大255文字までであることを検証
         $request->validate([
-            'content' => 'required|string|max:255'
+            'content' => 'required|string|max:255',
+            'due_date' => 'required|date',
+            'tags' => 'array',
+            'tags.*' => 'string', 
         ]);
 
         // Todoを作成してデータベースに保存
@@ -20,6 +23,15 @@ class TodoController extends Controller
             'content' => $request->content,
             'due_date' => $request->due_date,
         ]);
+        // タグを保存（中間テーブル経由）
+        if (!empty($validated['tags'])) {
+            $tagIds = [];
+            foreach ($validated['tags'] as $tagName) {
+                $tag = \App\Models\Tag::firstOrCreate(['name' => $tagName]);
+                $tagIds[] = $tag->id;
+            }
+            $todo->tags()->sync($tagIds);
+        }
 
         // 作成したTodoをJSON形式で返す
         return response()->json($todo, 201); // ステータスコード201で返す
