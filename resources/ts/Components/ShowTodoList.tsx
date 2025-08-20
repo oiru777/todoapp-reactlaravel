@@ -18,7 +18,7 @@ import {
 import FolderIcon from "@mui/icons-material/Folder";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from '@mui/icons-material/Add';
-import NavigationIcon from '@mui/icons-material/Navigation';
+import EditIcon from '@mui/icons-material/Edit';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -187,7 +187,7 @@ const ShowTodoList: React.FC = () => {
                 secondaryAction={
                   <>
                     <IconButton edge="end" aria-label="edit" onClick={() => handleEdit(todo)}>
-                      ✏️
+                      <EditIcon />
                     </IconButton>
                     <> </>
                     <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(todo.id)}>
