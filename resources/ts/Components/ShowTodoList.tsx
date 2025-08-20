@@ -13,6 +13,7 @@ import {
   Modal,
   TextField,
   Fab,
+  CircularProgress,
 } from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -35,6 +36,7 @@ const ShowTodoList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newContent, setNewContent] = useState("");
+  const [newTag, setNewTag] = useState("");
   const [newDueDate, setNewDueDate] = useState<Date | null>(new Date());
   const [message, setMessage] = useState("");
 
@@ -105,7 +107,7 @@ const ShowTodoList: React.FC = () => {
     }
   };
 
-  if (loading) return <Typography>Loading...</Typography>;
+  if (loading) return <CircularProgress />;
 
   // 締切日でソート
   const sortedTodos = [...todos].sort((a, b) => {
@@ -265,6 +267,13 @@ const ShowTodoList: React.FC = () => {
             label="タスクを入力"
             value={newContent}
             onChange={(e) => setNewContent(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="タグを入力"
+            value={newTag}
+            onChange={(e) => setNewTag(e.target.value)}
             fullWidth
             margin="normal"
           />
