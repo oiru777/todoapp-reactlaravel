@@ -24,6 +24,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { ja } from 'date-fns/locale';
 import '../../css/app.css';
+import { useNavigate } from "react-router-dom";
 
 
 interface Tag {
@@ -47,11 +48,16 @@ const ShowTodoList: React.FC = () => {
   const [newTags, setNewTags] = useState("");
   const [newDueDate, setNewDueDate] = useState<Date | null>(new Date());
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchTodos();
   }, []);
 
+  const handleTagClick = (tagName: string) => {
+    // たとえばタグ検索ページに遷移して、クエリにタグ名を渡す
+    navigate(`/tags/${tagName}`);
+  };
   const fetchTodos = async () => {
     try {
       const res = await axios.get("/api/todo");
@@ -218,7 +224,7 @@ const ShowTodoList: React.FC = () => {
                               size="small"
                               variant="outlined"
                               sx={{ mr: 1, mb: 0.5, fontSize: '0.75rem', padding: '2px 6px' }}
-                              onClick={() => console.log(`タグクリック: ${tag.name}`)}
+                              onClick={() => handleTagClick(tag.name)}
                             >
                               {tag.name}
                             </Button>
