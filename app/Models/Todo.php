@@ -14,5 +14,9 @@ class Todo extends Model
     'due_date',
     ];
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
     
 }
