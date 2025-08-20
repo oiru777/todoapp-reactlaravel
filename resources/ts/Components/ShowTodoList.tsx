@@ -208,7 +208,18 @@ const ShowTodoList: React.FC = () => {
                       締切: {dueDate.toLocaleDateString("ja-JP")} （{diffText}）<br />
                       {todo.tags && todo.tags.length > 0 && (
                         <span>
-                          タグ: {todo.tags.map(tag => tag.name).join(", ")}
+                          タグ:{" "}
+                          {todo.tags.map((tag, index) => (
+                            <Button
+                              key={index}
+                              size="small"
+                              variant="outlined"
+                              sx={{ mr: 1, mb: 0.5, fontSize: '0.75rem', padding: '2px 6px' }}
+                              onClick={() => console.log(`タグクリック: ${tag.name}`)}
+                            >
+                              {tag.name}
+                            </Button>
+                          ))}
                         </span>
                       )}
                     </>
