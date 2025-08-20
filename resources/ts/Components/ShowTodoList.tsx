@@ -24,10 +24,16 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { ja } from 'date-fns/locale';
 
+interface Tag {
+  id: number;
+  name: string;
+}
+
 interface Todo {
   id: number;
   content: string;
   due_date: string;
+  tags?: Tag[];
 }
 
 const ShowTodoList: React.FC = () => {
@@ -197,8 +203,18 @@ const ShowTodoList: React.FC = () => {
                 </ListItemAvatar>
                 <ListItemText
                   primary={todo.content}
-                  secondary={`締切: ${dueDate.toLocaleDateString("ja-JP")} （${diffText}）`}
+                  secondary={
+                    <>
+                      締切: {dueDate.toLocaleDateString("ja-JP")} （{diffText}）<br />
+                      {todo.tags && todo.tags.length > 0 && (
+                        <span>
+                          タグ: {todo.tags.map(tag => tag.name).join(", ")}
+                        </span>
+                      )}
+                    </>
+                  }
                 />
+
               </ListItem>
             );
           })}
@@ -226,10 +242,6 @@ const ShowTodoList: React.FC = () => {
           setMessage("");
         }}>
           <AddIcon />
-        </Fab>
-        <Fab variant="extended">
-          <NavigationIcon sx={{ mr: 1 }} />
-          タグ検索
         </Fab>
       </Box>
 
