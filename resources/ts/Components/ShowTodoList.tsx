@@ -23,6 +23,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { ja } from 'date-fns/locale';
+import '../../css/app.css';
+
 
 interface Tag {
   id: number;
@@ -126,7 +128,8 @@ const ShowTodoList: React.FC = () => {
 
   return (
     <>
-      <Box sx={{ maxWidth: 500, mx: "auto", mt: 4 }}>
+    
+      <Box sx={{ maxWidth: 500, mx: "auto", mt: 4 , backgroundColor: '#ffffff'}}>
         <Typography variant="h4" gutterBottom>
           ToDo リスト
         </Typography>
