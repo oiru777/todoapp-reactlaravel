@@ -20,6 +20,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import CheckIcon from '@mui/icons-material/Check';
 import DeleteIcon from "@mui/icons-material/Delete";
+import CancelIcon from "@mui/icons-material/Cancel";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import HomeIcon from '@mui/icons-material/Home';
@@ -50,6 +51,7 @@ const ShowTodoList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showDoneForm, setShowDoneForm] = useState(false);
+  const [showUnDoneForm, setShowUnDoneForm] = useState(false);
   const [newContent, setNewContent] = useState("");
   const [newTags, setNewTags] = useState("");
   const [newDueDate, setNewDueDate] = useState<Date | null>(new Date());
@@ -252,12 +254,22 @@ const handleUpdateDone = async () => {
                 key={todo.id}
                 secondaryAction={
                   <Box sx={{ display: 'flex', gap: 1 }}>
-                    <IconButton edge="end" aria-label="check" onClick={() => {
+                    {todo.done ? (
+                      <IconButton edge="end" aria-label="cancle" onClick={() => {
+                      setDoneTarget(todo); 
+                      setShowUnDoneForm(true);
+                      setMessage("");
+                    }}>
+                      <CancelIcon />
+                    </IconButton>
+                    ) : <IconButton edge="end" aria-label="check" onClick={() => {
                       setDoneTarget(todo); 
                       setShowDoneForm(true);
+                      setMessage("");
                     }}>
                       <CheckIcon />
                     </IconButton>
+                    }
                     <IconButton edge="end" aria-label="edit" onClick={() => handleEdit(todo)}>
                       <EditIcon />
                     </IconButton>
@@ -455,6 +467,7 @@ const handleUpdateDone = async () => {
                 } finally {
                   setDoneTarget(null);
                   setShowDoneForm(false);
+                  setMessage("");
                 }
               }} >
               はい
@@ -462,6 +475,66 @@ const handleUpdateDone = async () => {
             <Button
               variant="outlined"
               onClick={() => setShowDoneForm(false)}
+              fullWidth
+            >
+              キャンセル
+            </Button>
+          </Box>
+
+          {message && (
+            <Typography color="error" variant="body2">
+              {message}
+            </Typography>
+          )}
+        </Box>
+      </Modal>
+      {/* 完了フォームモーダル */}
+      <Modal open={showUnDoneForm} onClose={() => setShowUnDoneForm(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            p: 4,
+            borderRadius: 2,
+            boxShadow: 24,
+            width: 320,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+        >
+          <Typography variant="h6">未完了に切り替えますか？</Typography>
+
+          <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
+            <Button variant="contained" 
+            fullWidth 
+            onClick={async () => {
+                if (!doneTarget) return;
+
+                try {
+                  await axios.put(`/api/todo/${doneTarget.id}`, {
+                    content: doneTarget.content,
+                    due_date: doneTarget.due_date,
+                    done: false,
+                  });
+
+                  fetchTodos();
+                } catch (e) {
+                  console.error("完了状態の更新失敗", e);
+                } finally {
+                  setDoneTarget(null);
+                  setShowUnDoneForm(false);
+                  setMessage("");
+                }
+              }} >
+              はい
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => setShowUnDoneForm(false)}
               fullWidth
             >
               キャンセル

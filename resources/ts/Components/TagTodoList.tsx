@@ -19,6 +19,7 @@ import FolderIcon from "@mui/icons-material/Folder";
 import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import DeleteIcon from "@mui/icons-material/Delete";
+import CancelIcon from '@mui/icons-material/Cancel';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import CheckIcon from '@mui/icons-material/Check';
 import AddIcon from '@mui/icons-material/Add';
@@ -237,12 +238,22 @@ const TagTodoList: React.FC = () => {
                 key={todo.id}
                 secondaryAction={
                   <Box sx={{ display: 'flex', gap: 1 }}>
-                    <IconButton edge="end" aria-label="check" onClick={() => {
+                    {todo.done ? (
+                      <IconButton edge="end" aria-label="cancel" onClick={() => {
                       setDoneTarget(todo); 
                       setShowDoneForm(true);
+                      setMessage("");
+                    }}>
+                      <CancelIcon />
+                    </IconButton>
+                    ) : <IconButton edge="end" aria-label="check" onClick={() => {
+                      setDoneTarget(todo); 
+                      setShowDoneForm(true);
+                      setMessage("");
                     }}>
                       <CheckIcon />
                     </IconButton>
+                    }
                     <IconButton edge="end" aria-label="edit" onClick={() => handleEdit(todo)}>
                       <EditIcon />
                     </IconButton>
