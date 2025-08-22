@@ -264,7 +264,7 @@ const ShowTodoList: React.FC = () => {
         }}>
           <AddIcon />
         </Fab>
-        <Fab variant="extended" onClick={() => navigate("/show")}>
+        <Fab variant="extended" onClick={() => navigate("/")}>
         <HomeIcon sx={{ mr: 1 }} />
         Home
         </Fab>
@@ -312,7 +312,7 @@ const ShowTodoList: React.FC = () => {
             margin="normal"
           />
           <TextField
-            label="タグを入力"
+            label="タグを入力（カンマ区切りで記入）"
             value={newTags}
             onChange={(e) => setNewTags(e.target.value)}
             fullWidth

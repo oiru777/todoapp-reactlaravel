@@ -59,13 +59,13 @@ const TagTodoList: React.FC = () => {
   }, []);
 
   const handleTagClick = (tagName: string) => {
-    // たとえばタグ検索ページに遷移して、クエリにタグ名を渡す
+    // タグ検索ページに遷移
     navigate(`/tag/${tagName}`);
   };
   const fetchTodos = async () => {
     try {
       const res = await axios.get(`/api/tag/${tagName}/todos`);
-      console.log("タグに対応するTodo一覧", res.data); // ← ここで中身を確認
+      console.log("タグに対応するTodo一覧", res.data); 
       setTodos(res.data);
     } catch (e) {
       console.error(e);
@@ -142,7 +142,7 @@ const TagTodoList: React.FC = () => {
     
       <Box sx={{ maxWidth: 500, mx: "auto", mt: 4 , backgroundColor: '#ffffff'}}>
         <Typography variant="h4" gutterBottom>
-          ToDo リスト
+          タグ：{tagName}
         </Typography>
 
         {editingTodo && (
@@ -268,7 +268,7 @@ const TagTodoList: React.FC = () => {
         }}>
           <AddIcon />
         </Fab>
-        <Fab variant="extended" onClick={() => navigate("/show")}>
+        <Fab variant="extended" onClick={() => navigate("/")}>
         <HomeIcon sx={{ mr: 1 }} />
         Home
         </Fab>
@@ -316,8 +316,8 @@ const TagTodoList: React.FC = () => {
             margin="normal"
           />
           <TextField
-            label="タグを入力"
-            value={newTags}
+            label="タグを入力（カンマ区切りで記入）"
+            value={tagName}
             onChange={(e) => setNewTags(e.target.value)}
             fullWidth
             margin="normal"

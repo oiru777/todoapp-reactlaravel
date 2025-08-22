@@ -11,8 +11,7 @@ const App: React.FC = () => {
         <Router>
             <div>
                 <Routes>
-                    <Route path="/" element={<TodoForm />} />
-                    <Route path="/show" element={<ShowTodoList />} />
+                    <Route path="/" element={<ShowTodoList />} />
                     <Route path="/tag/:tagName" element={<TagTodoList />} />
                 </Routes>
             </div>
