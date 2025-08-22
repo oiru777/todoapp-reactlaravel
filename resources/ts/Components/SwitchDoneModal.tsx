@@ -14,7 +14,7 @@ interface SwitchDoneModalProps {
   message?: string;
 }
 
-const SwitchDoneModalModal: React.FC<SwitchDoneModalProps> = ({
+const SwitchDoneModal: React.FC<SwitchDoneModalProps> = ({
   open,
   onClose,
   onConfirm,
@@ -62,4 +62,4 @@ const SwitchDoneModalModal: React.FC<SwitchDoneModalProps> = ({
   );
 };
 
-export default SwitchDoneModalModal;
+export default SwitchDoneModal;
