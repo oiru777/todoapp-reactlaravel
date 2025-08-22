@@ -30,7 +30,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { ja } from 'date-fns/locale';
 import '../../css/app.css';
 import { useNavigate } from "react-router-dom";
-
+import AddTodoModal from './AddTodoModal';
+import SwitchDoneModal from './SwitchDoneModal';
 
 interface Tag {
   id: number;
@@ -64,9 +65,10 @@ const ShowTodoList: React.FC = () => {
   }, []);
 
   const handleTagClick = (tagName: string) => {
-    // たとえばタグ検索ページに遷移して、クエリにタグ名を渡す
+    // タグ検索ページに遷移して、クエリにタグ名を渡す
     navigate(`/tag/${tagName}`);
   };
+
   const fetchTodos = async () => {
     try {
       const res = await axios.get("/api/todo");
@@ -77,29 +79,28 @@ const ShowTodoList: React.FC = () => {
       setLoading(false);
     }
   };
+
   //選択されたTodoを編集モードに切り替えるための処理
   const handleEdit = (todo: Todo) => {
     setEditingTodo(todo);
     setNewContent(todo.content);
     setNewDueDate(new Date(todo.due_date));
-    // タグの名前だけの配列をセット（例: ["買い物", "重要"]）
     // todo.tags からタグ名の配列を作成
       const tagNames = todo.tags?.map(tag => tag.name) || [];
 
-      // 必要ならカンマ区切りの string に変換
+      // カンマ区切りの string に変換
       const tagString = tagNames
         .map(tag => tag.trim())
         .filter(tag => tag.length > 0)
         .join(',');
 
-      // カンマ区切りで使いたいならこちらをセット
       setNewTags(tagString);
 
-      // 文字列じゃなく配列で使いたい場合はこちら（こっちが推奨されるケース多い）
+      // 文字列じゃなく配列で使う場合
       // setNewTags(tagNames);
   };
 
-
+  // todo更新
   const handleUpdate = async () => {
     if (!editingTodo) return;
     try {
@@ -121,6 +122,7 @@ const ShowTodoList: React.FC = () => {
     }
   };
 
+  // todo削除
   const handleDelete = async (id: number) => {
     try {
       await axios.delete(`/api/todo/${id}`);
@@ -130,6 +132,7 @@ const ShowTodoList: React.FC = () => {
     }
   };
 
+  // Todo追加
   const handleAddTodo = async () => {
     if (!newContent || !newDueDate) {
       setMessage("内容と締切日を入力してください");
@@ -156,32 +159,56 @@ const ShowTodoList: React.FC = () => {
     }
   };
 
-const handleUpdateDone = async () => {
-  if (!editingTodo) return;
-
-  try {
-    await axios.put(`/api/todo/${editingTodo.id}`, {
-      done: true, // ← 完了状態に更新
-    });
-
-    // UI更新
-    fetchTodos();
-    setEditingTodo(null); // 編集モード解除
-    setNewContent("");
-    setNewDueDate(null);
-    setNewTags("");
-  } catch (e) {
-    console.error("完了への更新失敗:", e);
-  }
-};
-
-
   if (loading) return <CircularProgress />;
 
   // 締切日でソート
   const sortedTodos = [...todos].sort((a, b) => {
     return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
   });
+  
+  //上にスクロール
+  const returnTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
+  const handleConfirmDone = async () => {
+  if (!doneTarget) return;
+  try {
+    await axios.put(`/api/todo/${doneTarget.id}`, {
+      content: doneTarget.content,
+      due_date: doneTarget.due_date,
+      done: true,
+    });
+    fetchTodos();
+  } catch (e) {
+    console.error("完了状態の更新失敗", e);
+  } finally {
+    setDoneTarget(null);
+    setShowDoneForm(false);
+    setMessage("");
+  }
+};
+
+const handleConfirmUnDone = async () => {
+  if (!doneTarget) return;
+  try {
+    await axios.put(`/api/todo/${doneTarget.id}`, {
+      content: doneTarget.content,
+      due_date: doneTarget.due_date,
+      done: false,
+    });
+    fetchTodos();
+  } catch (e) {
+    console.error("未完了状態の更新失敗", e);
+  } finally {
+    setDoneTarget(null);
+    setShowUnDoneForm(false);
+    setMessage("");
+  }
+};
+
 
   return (
     <>
@@ -190,7 +217,7 @@ const handleUpdateDone = async () => {
         <Typography variant="h4" gutterBottom>
           ToDo リスト
         </Typography>
-
+        {/* todo編集（上に表示） */}
         {editingTodo && (
           <Box sx={{ mb: 2 }}>
             <TextField
@@ -239,7 +266,7 @@ const handleUpdateDone = async () => {
             </Box>
           </Box>
         )}
-
+        {/* todo一覧 */}
         <List>
           {sortedTodos.map((todo) => {
             const today = new Date();
@@ -258,7 +285,7 @@ const handleUpdateDone = async () => {
                       <IconButton edge="end" aria-label="cancle" onClick={() => {
                       setDoneTarget(todo); 
                       setShowUnDoneForm(true);
-                      setMessage("");
+                      
                     }}>
                       <CancelIcon />
                     </IconButton>
@@ -270,7 +297,10 @@ const handleUpdateDone = async () => {
                       <CheckIcon />
                     </IconButton>
                     }
-                    <IconButton edge="end" aria-label="edit" onClick={() => handleEdit(todo)}>
+                    <IconButton edge="end" aria-label="edit" onClick={() => {
+                        handleEdit(todo);
+                        returnTop();
+                    }}>
                       <EditIcon />
                     </IconButton>
                     <> </>
@@ -280,7 +310,7 @@ const handleUpdateDone = async () => {
                   </Box>
                 }
               >
-
+               
                 <ListItemAvatar>
                   <Avatar
                     sx={{
@@ -358,196 +388,35 @@ const handleUpdateDone = async () => {
         Home
         </Fab>
       </Box>
-
       {/* 追加フォームモーダル */}
-      <Modal open={showAddForm} onClose={() => setShowAddForm(false)}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
-            p: 4,
-            borderRadius: 2,
-            boxShadow: 24,
-            width: 320,
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-          }}
-        >
-          <Typography variant="h6">新しいToDoを追加</Typography>
-
-          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ja}>
-            <DatePicker
-              label="締切日"
-              value={newDueDate}
-              onChange={(date) => setNewDueDate(date)}
-              slotProps={{
-                textField: {
-                  fullWidth: true,
-                  margin: "normal",
-                },
-              }}
-            />
-          </LocalizationProvider>
-
-          <TextField
-            label="タスクを入力"
-            value={newContent}
-            onChange={(e) => setNewContent(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="タグを入力（カンマ区切りで記入）"
-            value={newTags}
-            onChange={(e) => setNewTags(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-
-          <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
-            <Button variant="contained" onClick={handleAddTodo} fullWidth>
-              追加
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => setShowAddForm(false)}
-              fullWidth
-            >
-              キャンセル
-            </Button>
-          </Box>
-
-          {message && (
-            <Typography color="error" variant="body2">
-              {message}
-            </Typography>
-          )}
-        </Box>
-      </Modal>
-       {/* 完了フォームモーダル */}
-      <Modal open={showDoneForm} onClose={() => setShowDoneForm(false)}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
-            p: 4,
-            borderRadius: 2,
-            boxShadow: 24,
-            width: 320,
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-          }}
-        >
-          <Typography variant="h6">完了に切り替えますか？</Typography>
-
-          <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
-            <Button variant="contained" 
-            fullWidth 
-            onClick={async () => {
-                if (!doneTarget) return;
-
-                try {
-                  await axios.put(`/api/todo/${doneTarget.id}`, {
-                    content: doneTarget.content,
-                    due_date: doneTarget.due_date,
-                    done: true,
-                  });
-
-                  fetchTodos();
-                } catch (e) {
-                  console.error("完了状態の更新失敗", e);
-                } finally {
-                  setDoneTarget(null);
-                  setShowDoneForm(false);
-                  setMessage("");
-                }
-              }} >
-              はい
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => setShowDoneForm(false)}
-              fullWidth
-            >
-              キャンセル
-            </Button>
-          </Box>
-
-          {message && (
-            <Typography color="error" variant="body2">
-              {message}
-            </Typography>
-          )}
-        </Box>
-      </Modal>
-      {/* 完了フォームモーダル */}
-      <Modal open={showUnDoneForm} onClose={() => setShowUnDoneForm(false)}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
-            p: 4,
-            borderRadius: 2,
-            boxShadow: 24,
-            width: 320,
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-          }}
-        >
-          <Typography variant="h6">未完了に切り替えますか？</Typography>
-
-          <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
-            <Button variant="contained" 
-            fullWidth 
-            onClick={async () => {
-                if (!doneTarget) return;
-
-                try {
-                  await axios.put(`/api/todo/${doneTarget.id}`, {
-                    content: doneTarget.content,
-                    due_date: doneTarget.due_date,
-                    done: false,
-                  });
-
-                  fetchTodos();
-                } catch (e) {
-                  console.error("完了状態の更新失敗", e);
-                } finally {
-                  setDoneTarget(null);
-                  setShowUnDoneForm(false);
-                  setMessage("");
-                }
-              }} >
-              はい
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => setShowUnDoneForm(false)}
-              fullWidth
-            >
-              キャンセル
-            </Button>
-          </Box>
-
-          {message && (
-            <Typography color="error" variant="body2">
-              {message}
-            </Typography>
-          )}
-        </Box>
-      </Modal>
+      <AddTodoModal
+        open={showAddForm}
+        onClose={() => setShowAddForm(false)}
+        newContent={newContent}
+        newTags={newTags}
+        newDueDate={newDueDate}
+        setNewContent={setNewContent}
+        setNewTags={setNewTags}
+        setNewDueDate={setNewDueDate}
+        handleAddTodo={handleAddTodo}
+        message={message}
+      />
+      {/*完了モーダル */}
+      <SwitchDoneModal
+      open={showDoneForm}
+      onClose={() => setShowDoneForm(false)}
+      onConfirm={handleConfirmDone}
+      targetLabel="完了"
+      message={message}
+    />
+     {/*未完了モーダル */}
+    <SwitchDoneModal
+      open={showUnDoneForm}
+      onClose={() => setShowUnDoneForm(false)}
+      onConfirm={handleConfirmUnDone}
+      targetLabel="未完了"
+      message={message}
+    />
     </>
   );
 };

@@ -15,7 +15,6 @@ import {
   Fab,
   CircularProgress,
 } from "@mui/material";
-import FolderIcon from "@mui/icons-material/Folder";
 import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -32,7 +31,6 @@ import { ja } from 'date-fns/locale';
 import '../../css/app.css';
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-
 
 interface Tag {
   id: number;
@@ -167,6 +165,13 @@ const TagTodoList: React.FC = () => {
     return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
   });
 
+  const returnTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
+
   return (
     <>
     
@@ -254,7 +259,10 @@ const TagTodoList: React.FC = () => {
                       <CheckIcon />
                     </IconButton>
                     }
-                    <IconButton edge="end" aria-label="edit" onClick={() => handleEdit(todo)}>
+                    <IconButton edge="end" aria-label="edit" onClick={() => {
+                        handleEdit(todo);
+                        returnTop();
+                    }}>
                       <EditIcon />
                     </IconButton>
                     <> </>
