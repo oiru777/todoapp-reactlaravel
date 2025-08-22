@@ -57,14 +57,31 @@ class TodoController extends Controller
 
     // Todoを更新するメソッド
     public function update(Request $request, $id)
-    {
-        $todo = Todo::findOrFail($id);
-        $todo->content = $request->input('content');
-        $todo->due_date = $request->input('due_date');
-        $todo->save();
+{
+    $validated = $request->validate([
+        'content' => 'required|string|max:255',
+        'due_date' => 'required|date',
+        'tags' => 'array',
+        'tags.*' => 'string', 
+    ]);
 
-        return response()->json($todo);
+    $todo = Todo::findOrFail($id);
+    $todo->content = $validated['content'];
+    $todo->due_date = $validated['due_date'];
+    $todo->save();
+
+    if (isset($validated['tags'])) {
+        $tagIds = [];
+        foreach ($validated['tags'] as $tagName) {
+            $tag = \App\Models\Tag::firstOrCreate(['name' => $tagName]);
+            $tagIds[] = $tag->id;
+        }
+        $todo->tags()->sync($tagIds);
     }
+
+    return response()->json($todo->load('tags')); 
+}
+
 
 
 }

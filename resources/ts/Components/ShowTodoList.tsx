@@ -162,6 +162,13 @@ const ShowTodoList: React.FC = () => {
                 }}
               />
             </LocalizationProvider>
+            <TextField
+            label="タグを入力（カンマ区切りで記入）"
+            value={newTags}
+            onChange={(e) => setNewTags(e.target.value)}
+            fullWidth
+            margin="normal"
+            />
             <Box sx={{ mt: 1, display: "flex", gap: 1 }}>
               <Button variant="contained" color="primary" onClick={handleUpdate} fullWidth>
                 保存
