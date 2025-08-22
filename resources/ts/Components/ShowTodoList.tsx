@@ -69,11 +69,26 @@ const ShowTodoList: React.FC = () => {
       setLoading(false);
     }
   };
-
+  //選択されたTodoを編集モードに切り替えるための処理
   const handleEdit = (todo: Todo) => {
     setEditingTodo(todo);
     setNewContent(todo.content);
     setNewDueDate(new Date(todo.due_date));
+    // タグの名前だけの配列をセット（例: ["買い物", "重要"]）
+    // todo.tags からタグ名の配列を作成
+      const tagNames = todo.tags?.map(tag => tag.name) || [];
+
+      // 必要ならカンマ区切りの string に変換
+      const tagString = tagNames
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0)
+        .join(',');
+
+      // カンマ区切りで使いたいならこちらをセット
+      setNewTags(tagString);
+
+      // 文字列じゃなく配列で使いたい場合はこちら（こっちが推奨されるケース多い）
+      // setNewTags(tagNames);
   };
 
   const handleUpdate = async () => {
@@ -82,11 +97,16 @@ const ShowTodoList: React.FC = () => {
       await axios.put(`/api/todo/${editingTodo.id}`, {
         content: newContent,
         due_date: newDueDate ? newDueDate.toISOString().split("T")[0] : null,
+        tags:newTags
+        .split(",")                   // カンマで区切って配列に
+        .map(tag => tag.trim())       // 空白を除去
+        .filter(tag => tag.length > 0) // 空文字を除去
       });
       fetchTodos();
       setEditingTodo(null);
       setNewContent("");
       setNewDueDate(null);
+      setNewTags("");
     } catch (e) {
       console.error("更新失敗:", e);
     }
