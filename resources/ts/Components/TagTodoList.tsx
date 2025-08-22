@@ -33,6 +33,7 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import AddTodoModal from './AddTodoModal';
 import SwitchDoneModal from './SwitchDoneModal';
+import EditTodoForm from './EditTodoForm';
 
 interface Tag {
   id: number;
@@ -217,53 +218,22 @@ const handleConfirmUnDone = async () => {
           タグ：{tagName}
         </Typography>
 
-        {editingTodo && (
-          <Box sx={{ mb: 2 }}>
-            <TextField
-              fullWidth
-              margin="normal"
-              value={newContent}
-              onChange={(e) => setNewContent(e.target.value)}
-            />
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ja}>
-              <DatePicker
-                label="締切日"
-                value={newDueDate}
-                onChange={(date) => setNewDueDate(date)}
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    margin: "normal",
-                  },
-                }}
-              />
-            </LocalizationProvider>
-            <TextField
-                        label="タグを入力（カンマ区切りで記入）"
-                        value={newTags}
-                        onChange={(e) => setNewTags(e.target.value)}
-                        fullWidth
-                        margin="normal"
-                        />
-            <Box sx={{ mt: 1, display: "flex", gap: 1 }}>
-              <Button variant="contained" color="primary" onClick={handleUpdate} fullWidth>
-                保存
-              </Button>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={() => {
-                  setEditingTodo(null);
-                  setNewContent("");
-                  setNewDueDate(null);
-                  setNewTags("");
-                }}
-                fullWidth
-              >
-                キャンセル
-              </Button>
-            </Box>
-          </Box>
+                {editingTodo && (
+          <EditTodoForm
+            content={newContent}
+            dueDate={newDueDate}
+            tags={newTags}
+            onChangeContent={setNewContent}
+            onChangeDueDate={setNewDueDate}
+            onChangeTags={setNewTags}
+            onSave={handleUpdate}
+            onCancel={() => {
+              setEditingTodo(null);
+              setNewContent("");
+              setNewDueDate(null);
+              setNewTags("");
+            }}
+          />
         )}
 
         <List>
