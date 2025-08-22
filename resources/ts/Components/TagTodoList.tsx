@@ -95,6 +95,15 @@ const TagTodoList: React.FC = () => {
       // 文字列じゃなく配列で使いたい場合はこちら（こっちが推奨されるケース多い）
       // setNewTags(tagNames);
   };
+    //選択されたTodoを編集モードに切り替えるための処理
+  const handleAddSameTag = (todo: Todo) => {
+    // タグの名前だけの配列をセット（例: ["買い物", "重要"]）
+    // todo.tags からタグ名の配列を作成
+    setNewTags(tagString);
+
+      // 文字列じゃなく配列で使いたい場合はこちら（こっちが推奨されるケース多い）
+      // setNewTags(tagNames);
+  };
 
   const handleUpdate = async () => {
     if (!editingTodo) return;
@@ -143,6 +152,7 @@ const TagTodoList: React.FC = () => {
       setMessage("追加しました");
       setNewContent("");
       setNewDueDate(new Date());
+      setNewTags("");
       setShowAddForm(false);
       fetchTodos();
     } catch (e) {
@@ -187,6 +197,13 @@ const TagTodoList: React.FC = () => {
                 }}
               />
             </LocalizationProvider>
+            <TextField
+                        label="タグを入力（カンマ区切りで記入）"
+                        value={newTags}
+                        onChange={(e) => setNewTags(e.target.value)}
+                        fullWidth
+                        margin="normal"
+                        />
             <Box sx={{ mt: 1, display: "flex", gap: 1 }}>
               <Button variant="contained" color="primary" onClick={handleUpdate} fullWidth>
                 保存
@@ -198,6 +215,7 @@ const TagTodoList: React.FC = () => {
                   setEditingTodo(null);
                   setNewContent("");
                   setNewDueDate(null);
+                  setNewTags("");
                 }}
                 fullWidth
               >
@@ -286,6 +304,7 @@ const TagTodoList: React.FC = () => {
           setNewContent("");
           setNewDueDate(new Date());
           setMessage("");
+          setNewTags(tagName || "")
         }}>
           <AddIcon />
         </Fab>
@@ -338,7 +357,7 @@ const TagTodoList: React.FC = () => {
           />
           <TextField
             label="タグを入力（カンマ区切りで記入）"
-            value={tagName}
+            value={newTags}
             onChange={(e) => setNewTags(e.target.value)}
             fullWidth
             margin="normal"

@@ -138,6 +138,7 @@ const ShowTodoList: React.FC = () => {
       setMessage("追加しました");
       setNewContent("");
       setNewDueDate(new Date());
+      setNewTags("");
       setShowAddForm(false);
       fetchTodos();
     } catch (e) {
@@ -200,6 +201,7 @@ const ShowTodoList: React.FC = () => {
                   setEditingTodo(null);
                   setNewContent("");
                   setNewDueDate(null);
+                  setNewTags("");
                 }}
                 fullWidth
               >
