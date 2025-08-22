@@ -16,6 +16,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
+import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -235,9 +237,10 @@ const ShowTodoList: React.FC = () => {
                   </>
                 }
               >
+
                 <ListItemAvatar>
-                  <Avatar>
-                    <FolderIcon />
+                  <Avatar sx={{ bgcolor: diffDays < 0 ? 'error.main' : 'primary.main' }}>
+                    {diffDays < 0 ? <AssignmentLateIcon /> : <AssignmentIcon />}
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
