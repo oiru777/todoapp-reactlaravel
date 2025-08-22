@@ -403,7 +403,7 @@ const handleConfirmUnDone = async () => {
         handleAddTodo={handleAddTodo}
         message={message}
       />
-      {/*完了モーダル */}
+      {/*完了スイッチモーダル */}
       <SwitchDoneModal
       open={showDoneForm}
       onClose={() => setShowDoneForm(false)}
@@ -411,7 +411,7 @@ const handleConfirmUnDone = async () => {
       targetLabel="完了"
       message={message}
     />
-     {/*未完了モーダル */}
+     {/*未完了スイッチモーダル */}
     <SwitchDoneModal
       open={showUnDoneForm}
       onClose={() => setShowUnDoneForm(false)}
