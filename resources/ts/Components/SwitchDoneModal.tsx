@@ -6,7 +6,7 @@ import {
   Button,
 } from "@mui/material";
 
-interface ConfirmStatusModalProps {
+interface SwitchDoneModalProps {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -14,7 +14,7 @@ interface ConfirmStatusModalProps {
   message?: string;
 }
 
-const ConfirmStatusModal: React.FC<ConfirmStatusModalProps> = ({
+const SwitchDoneModalModal: React.FC<SwitchDoneModalProps> = ({
   open,
   onClose,
   onConfirm,
@@ -62,4 +62,4 @@ const ConfirmStatusModal: React.FC<ConfirmStatusModalProps> = ({
   );
 };
 
-export default ConfirmStatusModal;
+export default SwitchDoneModalModal;
