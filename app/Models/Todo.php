@@ -12,6 +12,7 @@ class Todo extends Model
     protected $fillable = [
     'content',
     'due_date',
+    'done',
     ];
 
     public function tags()

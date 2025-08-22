@@ -19,6 +19,8 @@ import FolderIcon from "@mui/icons-material/Folder";
 import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import DeleteIcon from "@mui/icons-material/Delete";
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import CheckIcon from '@mui/icons-material/Check';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import HomeIcon from '@mui/icons-material/Home';
@@ -41,6 +43,7 @@ interface Todo {
   content: string;
   due_date: string;
   tags?: Tag[];
+  done: boolean;
 }
 
 const TagTodoList: React.FC = () => {
@@ -53,6 +56,8 @@ const TagTodoList: React.FC = () => {
   const [newTags, setNewTags] = useState("");
   const [newDueDate, setNewDueDate] = useState<Date | null>(new Date());
   const [message, setMessage] = useState("");
+  const [doneTarget, setDoneTarget] = useState<Todo | null>(null);
+  const [showDoneForm, setShowDoneForm] = useState(false);
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
 
@@ -231,7 +236,13 @@ const TagTodoList: React.FC = () => {
               <ListItem
                 key={todo.id}
                 secondaryAction={
-                  <>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <IconButton edge="end" aria-label="check" onClick={() => {
+                      setDoneTarget(todo); 
+                      setShowDoneForm(true);
+                    }}>
+                      <CheckIcon />
+                    </IconButton>
                     <IconButton edge="end" aria-label="edit" onClick={() => handleEdit(todo)}>
                       <EditIcon />
                     </IconButton>
@@ -239,12 +250,26 @@ const TagTodoList: React.FC = () => {
                     <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(todo.id)}>
                       <DeleteIcon />
                     </IconButton>
-                  </>
+                  </Box>
                 }
               >
                 <ListItemAvatar>
-                  <Avatar sx={{ bgcolor: diffDays < 0 ? 'error.main' : 'primary.main' }}>
-                    {diffDays < 0 ? <AssignmentLateIcon /> : <AssignmentIcon />}
+                  <Avatar
+                    sx={{
+                      bgcolor: todo.done
+                        ? 'success.main'
+                        : diffDays < 0
+                        ? 'error.main'
+                        : 'primary.main',
+                    }}
+                  >
+                    {todo.done ? (
+                      <AssignmentTurnedInIcon />
+                    ) : diffDays < 0 ? (
+                      <AssignmentLateIcon />
+                    ) : (
+                      <AssignmentIcon />
+                    )}
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
@@ -363,6 +388,65 @@ const TagTodoList: React.FC = () => {
             <Button
               variant="outlined"
               onClick={() => setShowAddForm(false)}
+              fullWidth
+            >
+              キャンセル
+            </Button>
+          </Box>
+
+          {message && (
+            <Typography color="error" variant="body2">
+              {message}
+            </Typography>
+          )}
+        </Box>
+      </Modal>
+       {/* 完了フォームモーダル */}
+      <Modal open={showDoneForm} onClose={() => setShowDoneForm(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            p: 4,
+            borderRadius: 2,
+            boxShadow: 24,
+            width: 320,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+        >
+          <Typography variant="h6">完了に切り替えますか？</Typography>
+
+          <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
+            <Button variant="contained" 
+            fullWidth 
+            onClick={async () => {
+                if (!doneTarget) return;
+
+                try {
+                  await axios.put(`/api/todo/${doneTarget.id}`, {
+                    content: doneTarget.content,
+                    due_date: doneTarget.due_date,
+                    done: true,
+                  });
+
+                  fetchTodos();
+                } catch (e) {
+                  console.error("完了状態の更新失敗", e);
+                } finally {
+                  setDoneTarget(null);
+                  setShowDoneForm(false);
+                }
+              }} >
+              はい
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => setShowDoneForm(false)}
               fullWidth
             >
               キャンセル

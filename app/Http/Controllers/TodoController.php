@@ -63,11 +63,15 @@ class TodoController extends Controller
         'due_date' => 'required|date',
         'tags' => 'array',
         'tags.*' => 'string', 
+        'done' => 'nullable|boolean',
     ]);
 
     $todo = Todo::findOrFail($id);
     $todo->content = $validated['content'];
     $todo->due_date = $validated['due_date'];
+    if ($request->has('done')) {
+        $todo->done = $request->input('done');
+    }
     $todo->save();
 
     if (isset($validated['tags'])) {

@@ -16,6 +16,7 @@ return new class extends Migration
     $table->string('content');
     $table->date('due_date')->nullable();  // ここ追加
     $table->timestamps();
+    $table->boolean('done')->default(false);
     });
 }
 
