@@ -31,6 +31,8 @@ import { ja } from 'date-fns/locale';
 import '../../css/app.css';
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import AddTodoModal from './AddTodoModal';
+import SwitchDoneModal from './SwitchDoneModal';
 
 interface Tag {
   id: number;
@@ -57,8 +59,8 @@ const TagTodoList: React.FC = () => {
   const [message, setMessage] = useState("");
   const [doneTarget, setDoneTarget] = useState<Todo | null>(null);
   const [showDoneForm, setShowDoneForm] = useState(false);
+  const [showUnDoneForm, setShowUnDoneForm] = useState(false);
   const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchTodos();
@@ -170,6 +172,41 @@ const TagTodoList: React.FC = () => {
     top: 0,
     behavior: "smooth",
   });
+};
+    const handleConfirmDone = async () => {
+  if (!doneTarget) return;
+  try {
+    await axios.put(`/api/todo/${doneTarget.id}`, {
+      content: doneTarget.content,
+      due_date: doneTarget.due_date,
+      done: true,
+    });
+    fetchTodos();
+  } catch (e) {
+    console.error("完了状態の更新失敗", e);
+  } finally {
+    setDoneTarget(null);
+    setShowDoneForm(false);
+    setMessage("");
+  }
+};
+
+const handleConfirmUnDone = async () => {
+  if (!doneTarget) return;
+  try {
+    await axios.put(`/api/todo/${doneTarget.id}`, {
+      content: doneTarget.content,
+      due_date: doneTarget.due_date,
+      done: false,
+    });
+    fetchTodos();
+  } catch (e) {
+    console.error("未完了状態の更新失敗", e);
+  } finally {
+    setDoneTarget(null);
+    setShowUnDoneForm(false);
+    setMessage("");
+  }
 };
 
   return (
@@ -345,140 +382,43 @@ const TagTodoList: React.FC = () => {
         }}>
           <AddIcon />
         </Fab>
-        <Fab variant="extended" onClick={() => navigate("/")}>
+        <Fab variant="extended" onClick={() => {
+            navigate("/"),returnTop();
+            }}>
         <HomeIcon sx={{ mr: 1 }} />
         Home
         </Fab>
       </Box>
 
-      {/* 追加フォームモーダル */}
-      <Modal open={showAddForm} onClose={() => setShowAddForm(false)}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
-            p: 4,
-            borderRadius: 2,
-            boxShadow: 24,
-            width: 320,
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-          }}
-        >
-          <Typography variant="h6">新しいToDoを追加</Typography>
-
-          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ja}>
-            <DatePicker
-              label="締切日"
-              value={newDueDate}
-              onChange={(date) => setNewDueDate(date)}
-              slotProps={{
-                textField: {
-                  fullWidth: true,
-                  margin: "normal",
-                },
-              }}
-            />
-          </LocalizationProvider>
-
-          <TextField
-            label="タスクを入力"
-            value={newContent}
-            onChange={(e) => setNewContent(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="タグを入力（カンマ区切りで記入）"
-            value={newTags}
-            onChange={(e) => setNewTags(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-
-          <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
-            <Button variant="contained" onClick={handleAddTodo} fullWidth>
-              追加
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => setShowAddForm(false)}
-              fullWidth
-            >
-              キャンセル
-            </Button>
-          </Box>
-
-          {message && (
-            <Typography color="error" variant="body2">
-              {message}
-            </Typography>
-          )}
-        </Box>
-      </Modal>
-       {/* 完了フォームモーダル */}
-      <Modal open={showDoneForm} onClose={() => setShowDoneForm(false)}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
-            p: 4,
-            borderRadius: 2,
-            boxShadow: 24,
-            width: 320,
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-          }}
-        >
-          <Typography variant="h6">完了に切り替えますか？</Typography>
-
-          <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
-            <Button variant="contained" 
-            fullWidth 
-            onClick={async () => {
-                if (!doneTarget) return;
-
-                try {
-                  await axios.put(`/api/todo/${doneTarget.id}`, {
-                    content: doneTarget.content,
-                    due_date: doneTarget.due_date,
-                    done: true,
-                  });
-
-                  fetchTodos();
-                } catch (e) {
-                  console.error("完了状態の更新失敗", e);
-                } finally {
-                  setDoneTarget(null);
-                  setShowDoneForm(false);
-                }
-              }} >
-              はい
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => setShowDoneForm(false)}
-              fullWidth
-            >
-              キャンセル
-            </Button>
-          </Box>
-
-          {message && (
-            <Typography color="error" variant="body2">
-              {message}
-            </Typography>
-          )}
-        </Box>
-      </Modal>
+{/* 追加フォームモーダル */}
+      <AddTodoModal
+        open={showAddForm}
+        onClose={() => setShowAddForm(false)}
+        newContent={newContent}
+        newTags={newTags}
+        newDueDate={newDueDate}
+        setNewContent={setNewContent}
+        setNewTags={setNewTags}
+        setNewDueDate={setNewDueDate}
+        handleAddTodo={handleAddTodo}
+        message={message}
+      />
+      {/*完了モーダル */}
+      <SwitchDoneModal
+      open={showDoneForm}
+      onClose={() => setShowDoneForm(false)}
+      onConfirm={handleConfirmDone}
+      targetLabel="完了"
+      message={message}
+    />
+     {/*未完了モーダル */}
+    <SwitchDoneModal
+      open={showUnDoneForm}
+      onClose={() => setShowUnDoneForm(false)}
+      onConfirm={handleConfirmUnDone}
+      targetLabel="未完了"
+      message={message}
+    />
     </>
   );
 };

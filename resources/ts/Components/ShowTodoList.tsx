@@ -383,7 +383,9 @@ const handleConfirmUnDone = async () => {
         }}>
           <AddIcon />
         </Fab>
-        <Fab variant="extended" onClick={() => navigate("/")}>
+        <Fab variant="extended" onClick={() => {
+          navigate("/"),returnTop();
+          }}>
         <HomeIcon sx={{ mr: 1 }} />
         Home
         </Fab>
