@@ -14,7 +14,7 @@ class TodoController extends Controller
         'content' => 'required|string|max:255',
         'due_date' => 'required|date',
         'tags' => 'array',
-        'tags.*' => 'string', 
+        'tags.*' => 'string|max:50', 
     ]);
 
     $todo = Todo::create([
@@ -62,7 +62,7 @@ class TodoController extends Controller
         'content' => 'required|string|max:255',
         'due_date' => 'required|date',
         'tags' => 'array',
-        'tags.*' => 'string', 
+        'tags.*' => 'string|max:50', 
         'done' => 'nullable|boolean',
     ]);
 
