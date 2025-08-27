@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTodos } from '../hooks/useTodos';
 import type { Todo } from '../types';
 
+
 interface Props {
   title: string;
   fetchUrl: string;
@@ -42,6 +43,7 @@ const TodoListPage: React.FC<Props> = ({ title, fetchUrl, initialTag }) => {
       .join(',');
     setNewTags(tagString);
     scrollToTop();
+    console.log(todo)
   };
 
   // 編集保存
@@ -178,6 +180,7 @@ const TodoListPage: React.FC<Props> = ({ title, fetchUrl, initialTag }) => {
           setNewContent("");
           setNewDueDate(new Date());
           setMessage("");
+          setNewTags(initialTag || '');
         }}
         onHomeClick={() => {
           navigate("/");

@@ -16,7 +16,9 @@ class TagController extends Controller
         return response()->json([]);
     }
 
-    return response()->json($tag->todos); 
+    return response()->json(
+        $tag->todos()->with('tags')->get()
+    );
 }
 
 }
