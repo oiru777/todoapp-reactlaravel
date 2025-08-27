@@ -1,4 +1,13 @@
-Laravel + React（TypeScript）で開発したシンプルなTodoアプリ
+# Laravel + React（TypeScript）で開発したシンプルなTodoアプリ
 
+## 環境
 Laravel 9.46.0
 React 18.2.0
+Laravel sailで環境構築
+
+## 機能
+タスク追加
+タスク編集
+タスク削除
+タグ検索
+タスクを完了に切り替える
