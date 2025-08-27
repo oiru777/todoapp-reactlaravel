@@ -1,6 +1,6 @@
 # Todoアプリ
 
-## 環境
+## 使用技術
 - Laravel 9.46.0
 - React 18.2.0  
 Laravel sailで環境構築
