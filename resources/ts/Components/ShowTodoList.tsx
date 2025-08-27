@@ -59,8 +59,8 @@ const ShowTodoList: React.FC = () => {
     fetchTodos();
   }, []);
 
+  //タグ検索ページに遷移して、クエリにタグ名を渡す
   const handleTagClick = (tagName: string) => {
-    // タグ検索ページに遷移して、クエリにタグ名を渡す
     navigate(`/tag/${tagName}`);
   };
 
@@ -168,6 +168,7 @@ const ShowTodoList: React.FC = () => {
     behavior: "smooth",
   });
 };
+  //完了状態に更新
   const handleConfirmDone = async () => {
   if (!doneTarget) return;
   try {
@@ -186,6 +187,7 @@ const ShowTodoList: React.FC = () => {
   }
 };
 
+//未完了状態に更新
 const handleConfirmUnDone = async () => {
   if (!doneTarget) return;
   try {
@@ -209,6 +211,7 @@ const handleConfirmUnDone = async () => {
     <>
     
       <Box sx={{ maxWidth: 500, mx: "auto", mt: 4 , backgroundColor: '#ffffff'}}>
+        {/* タイトル */}
         <Typography variant="h4" gutterBottom>
           ToDo リスト
         </Typography>
@@ -231,7 +234,7 @@ const handleConfirmUnDone = async () => {
           />
         )}
 
-        {/* todo一覧 */}
+        {/* todo一覧表示 */}
         <List>
           {sortedTodos.map((todo) => {
             const today = new Date();
@@ -340,6 +343,7 @@ const handleConfirmUnDone = async () => {
           "& > :not(style)": { m: 1 },
         }}
       >
+        {/* 追加ボタン */}
         <Fab color="primary" aria-label="add" onClick={() => {
           setShowAddForm(true);
           setNewContent("");
@@ -348,6 +352,7 @@ const handleConfirmUnDone = async () => {
         }}>
           <AddIcon />
         </Fab>
+        {/* ホームに戻るボタン */}
         <Fab variant="extended" onClick={() => {
           navigate("/"),returnTop();
           }}>
