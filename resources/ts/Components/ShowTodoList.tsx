@@ -2,31 +2,19 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Box,
-  List,
-  ListItem,
-  ListItemText,
   Typography,
-  Button,
-  ListItemAvatar,
-  Avatar,
-  IconButton,
   Fab,
   CircularProgress,
 } from "@mui/material";
-import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
-import CheckIcon from '@mui/icons-material/Check';
-import DeleteIcon from "@mui/icons-material/Delete";
-import CancelIcon from "@mui/icons-material/Cancel";
 import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
 import HomeIcon from '@mui/icons-material/Home';
 import '../../css/app.css';
 import { useNavigate } from "react-router-dom";
 import AddTodoModal from './AddTodoModal';
 import SwitchDoneModal from './SwitchDoneModal';
 import EditTodoForm from './EditTodoForm';
+import TodoList from "./TodoList";
+
 
 interface Tag {
   id: number;
@@ -209,7 +197,6 @@ const handleConfirmUnDone = async () => {
 
   return (
     <>
-    
       <Box sx={{ maxWidth: 500, mx: "auto", mt: 4 , backgroundColor: '#ffffff'}}>
         {/* タイトル */}
         <Typography variant="h4" gutterBottom>
@@ -233,100 +220,26 @@ const handleConfirmUnDone = async () => {
             }}
           />
         )}
-
-        {/* todo一覧表示 */}
-        <List>
-          {sortedTodos.map((todo) => {
-            const today = new Date();
-            const dueDate = new Date(todo.due_date);
-            const diffTime = dueDate.getTime() - today.getTime();
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            const diffText =
-              diffDays < 0 ? `${Math.abs(diffDays)}日過ぎました` : `あと${diffDays}日`;
-
-            return (
-              <ListItem
-                key={todo.id}
-                secondaryAction={
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    {todo.done ? (
-                      <IconButton edge="end" aria-label="cancle" onClick={() => {
-                      setDoneTarget(todo); 
-                      setShowUnDoneForm(true);
-                      
-                    }}>
-                      <CancelIcon />
-                    </IconButton>
-                    ) : <IconButton edge="end" aria-label="check" onClick={() => {
-                      setDoneTarget(todo); 
-                      setShowDoneForm(true);
-                      setMessage("");
-                    }}>
-                      <CheckIcon />
-                    </IconButton>
-                    }
-                    <IconButton edge="end" aria-label="edit" onClick={() => {
-                        handleEdit(todo);
-                        returnTop();
-                    }}>
-                      <EditIcon />
-                    </IconButton>
-                    <> </>
-                    <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(todo.id)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
-                }
-              >
-               
-                <ListItemAvatar>
-                  <Avatar
-                    sx={{
-                      bgcolor: todo.done
-                        ? 'success.main'
-                        : diffDays < 0
-                        ? 'error.main'
-                        : 'primary.main',
-                    }}
-                  >
-                    {todo.done ? (
-                      <AssignmentTurnedInIcon />
-                    ) : diffDays < 0 ? (
-                      <AssignmentLateIcon />
-                    ) : (
-                      <AssignmentIcon />
-                    )}
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={todo.content}
-                  secondary={
-                    <>
-                      締切: {dueDate.toLocaleDateString("ja-JP")} （{diffText}）<br />
-                      {todo.tags && todo.tags.length > 0 && (
-                        <span>
-                          タグ:{" "}
-                          {todo.tags.map((tag, index) => (
-                            <Button
-                              key={index}
-                              size="small"
-                              variant="outlined"
-                              sx={{ mr: 1, mb: 0.5, fontSize: '0.75rem', padding: '2px 6px' }}
-                              onClick={() => handleTagClick(tag.name)}
-                            >
-                              {tag.name}
-                            </Button>
-                          ))}
-                        </span>
-                      )}
-                    </>
-                  }
-                />
-
-              </ListItem>
-            );
-          })}
-        </List>
+        {/* todo一覧表示とアクションボタン（完了・編集・削除）*/}
+        <TodoList
+          todos={todos}
+          onEdit={(todo) => {
+            handleEdit(todo);
+            returnTop();
+          }}
+          onDelete={handleDelete}
+          onToggleDone={(todo) => {
+            setDoneTarget(todo);
+            setShowDoneForm(true);
+            setMessage("");
+          }}
+          onToggleUnDone={(todo) => {
+            setDoneTarget(todo);
+            setShowUnDoneForm(true);
+            setMessage("");
+          }}
+          onTagClick={handleTagClick}
+        />
       </Box>
 
       {/* 画面下のFab */}
