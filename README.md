@@ -2,7 +2,7 @@
 
 ## 環境
 - Laravel 9.46.0
-- React 18.2.0
+- React 18.2.0  
 Laravel sailで環境構築
 
 ## 機能
