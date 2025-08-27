@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import { Box, Typography, CircularProgress } from '@mui/material';
-import AddTodoModal from './AddTodoModal';
+import AddTodoModal from './modals/AddTodoModal';
 import EditTodoForm from './EditTodoForm';
-import SwitchDoneModal from './SwitchDoneModal';
+import SwitchDoneModal from './modals/SwitchDoneModal';
 import TodoList from './TodoList';
 import TodoToolbar from "./TodoToolbar";
 import { useNavigate } from 'react-router-dom';
@@ -87,24 +87,27 @@ const TodoListPage: React.FC<Props> = ({ title, fetchUrl, initialTag }) => {
     }
   };
 
-  // 完了・未完了処理
+  // 完了・未完了に切り替える
   const handleToggleDone = async (done: boolean) => {
     if (!doneTarget) return;
     try {
-      await axios.put(`/api/todo/${doneTarget.id}`, {
-        ...doneTarget,
-        done,
-      });
-      fetchTodos();
+        await axios.put(`/api/todo/${doneTarget.id}`, {
+        content: doneTarget.content,
+        due_date: new Date(doneTarget.due_date).toISOString().split("T")[0], // ← 'YYYY-MM-DD' 形式に
+        done: done,
+        tags: doneTarget.tags?.map(tag => tag.name) ?? [], // ← タグを name の配列に変換
+        });
+        fetchTodos();
     } catch (e) {
-      console.error(`${done ? '完了' : '未完了'}状態の更新失敗`, e);
+        console.error(`${done ? '完了' : '未完了'}状態の更新失敗`, e);
     } finally {
-      setDoneTarget(null);
-      setShowDoneForm(false);
-      setShowUnDoneForm(false);
-      setMessage('');
+        setDoneTarget(null);
+        setShowDoneForm(false);
+        setShowUnDoneForm(false);
+        setMessage('');
     }
-  };
+    };
+
 
     // todo削除
   const handleDelete = async (id: number) => {
@@ -126,7 +129,7 @@ const TodoListPage: React.FC<Props> = ({ title, fetchUrl, initialTag }) => {
 
   return (
     <>
-      <Box sx={{ maxWidth: 500, mx: 'auto', mt: 4, backgroundColor: '#ffffff' }}>
+      <Box sx={{ maxWidth: 500, mx: 'auto',mb: 10, mt: 4, backgroundColor: '#ffffff' }}>
         <Typography variant="h4" gutterBottom>{title}</Typography>
 
         {editingTodo && (
