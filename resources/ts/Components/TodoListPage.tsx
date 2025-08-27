@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTodos } from '../hooks/useTodos';
 import type { Todo } from '../types';
 
-
 interface Props {
   title: string;
   fetchUrl: string;
@@ -110,7 +109,6 @@ const TodoListPage: React.FC<Props> = ({ title, fetchUrl, initialTag }) => {
     }
     };
 
-
     // todo削除
   const handleDelete = async (id: number) => {
     try {
@@ -133,7 +131,7 @@ const TodoListPage: React.FC<Props> = ({ title, fetchUrl, initialTag }) => {
     <>
       <Box sx={{ maxWidth: 500, mx: 'auto',mb: 10, mt: 4, backgroundColor: '#ffffff' }}>
         <Typography variant="h4" gutterBottom>{title}</Typography>
-
+        {/* todo編集記入欄、編集ボタン押した時のみ表示 */}
         {editingTodo && (
           <EditTodoForm
             content={newContent}
@@ -173,7 +171,7 @@ const TodoListPage: React.FC<Props> = ({ title, fetchUrl, initialTag }) => {
           onTagClick={handleTagClick}
         />
       </Box>
-      {/* 画面下のFab */}
+      {/* 画面下のFab（追加、ホーム） */}
       <TodoToolbar
         onAddClick={() => {
           setShowAddForm(true);
@@ -187,6 +185,7 @@ const TodoListPage: React.FC<Props> = ({ title, fetchUrl, initialTag }) => {
           scrollToTop();
         }}
       />
+      {/* todo追加モーダル、FAB押した時に表示 */}
       <AddTodoModal
         open={showAddForm}
         onClose={() => setShowAddForm(false)}
@@ -199,7 +198,7 @@ const TodoListPage: React.FC<Props> = ({ title, fetchUrl, initialTag }) => {
         handleAddTodo={handleAddTodo}
         message={message}
       />
-
+      {/* 未完了->完了に切り替えるモーダル、未完了の時だけ表示 */}
       <SwitchDoneModal
         open={showDoneForm}
         onClose={() => setShowDoneForm(false)}
@@ -207,7 +206,7 @@ const TodoListPage: React.FC<Props> = ({ title, fetchUrl, initialTag }) => {
         targetLabel="完了"
         message={message}
       />
-
+      {/* 完了->未完了に切り替えるモーダル、完了の時だけ表示 */}
       <SwitchDoneModal
         open={showUnDoneForm}
         onClose={() => setShowUnDoneForm(false)}
