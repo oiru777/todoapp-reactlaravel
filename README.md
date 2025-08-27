@@ -1,4 +1,4 @@
-# Laravel + React（TypeScript）で開発したシンプルなTodoアプリ
+# Todoアプリ
 
 ## 環境
 - Laravel 9.46.0
