@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { Box, Typography, CircularProgress } from '@mui/material'
-import AddTodoModal from './modals/AddTodoModal'
-import EditTodoForm from './EditTodoForm'
-import SwitchDoneModal from './modals/SwitchDoneModal'
-import TodoList from './TodoList'
-import TodoToolbar from './TodoToolbar'
+import AddTodoModal from '../modals/AddTodoModal'
+import EditTodoForm from '../EditTodoForm'
+import SwitchDoneModal from '../modals/SwitchDoneModal'
+import TodoList from '../TodoList'
+import TodoToolbar from '../TodoToolbar'
 import { useNavigate } from 'react-router-dom'
-import { useTodos } from '../hooks/useTodos'
-import type { Todo } from '../types'
+import { useTodos } from '../../hooks/useTodos'
+import type { Todo } from '../../types'
 
 interface Props {
     title: string
@@ -16,7 +16,7 @@ interface Props {
     initialTag?: string
 }
 
-const TodoListPage: React.FC<Props> = ({ title, fetchUrl, initialTag }) => {
+export const TodoListPage: React.FC<Props> = ({ title, fetchUrl, initialTag }) => {
     const { todos, setTodos, loading, fetchTodos } = useTodos(fetchUrl)
     const navigate = useNavigate()
 
@@ -225,5 +225,3 @@ const TodoListPage: React.FC<Props> = ({ title, fetchUrl, initialTag }) => {
         </>
     )
 }
-
-export default TodoListPage

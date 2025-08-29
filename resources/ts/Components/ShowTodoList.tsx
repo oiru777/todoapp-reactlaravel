@@ -1,8 +1,6 @@
 import React from 'react'
-import TodoListPage from './TodoListPage'
+import { TodoListPage } from './pages/TodoListPage'
 
-const ShowTodoList: React.FC = () => {
+export const ShowTodoList: React.FC = () => {
     return <TodoListPage title="ToDoリスト" fetchUrl="/api/todo" />
 }
-
-export default ShowTodoList
