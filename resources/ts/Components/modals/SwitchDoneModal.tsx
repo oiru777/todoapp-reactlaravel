@@ -9,7 +9,13 @@ interface SwitchDoneModalProps {
     message?: string
 }
 
-const SwitchDoneModal: React.FC<SwitchDoneModalProps> = ({ open, onClose, onConfirm, targetLabel, message = '' }) => {
+export const SwitchDoneModal: React.FC<SwitchDoneModalProps> = ({
+    open,
+    onClose,
+    onConfirm,
+    targetLabel,
+    message = '',
+}) => {
     return (
         <Modal open={open} onClose={onClose}>
             <Box
@@ -48,5 +54,3 @@ const SwitchDoneModal: React.FC<SwitchDoneModalProps> = ({ open, onClose, onConf
         </Modal>
     )
 }
-
-export default SwitchDoneModal

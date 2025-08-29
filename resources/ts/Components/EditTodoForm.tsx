@@ -16,7 +16,7 @@ interface EditTodoFormProps {
     onCancel: () => void
 }
 
-const EditTodoForm: React.FC<EditTodoFormProps> = ({
+export const EditTodoForm: React.FC<EditTodoFormProps> = ({
     content,
     dueDate,
     tags,
@@ -60,5 +60,3 @@ const EditTodoForm: React.FC<EditTodoFormProps> = ({
         </Box>
     )
 }
-
-export default EditTodoForm

@@ -18,7 +18,7 @@ interface Props {
     message: string
 }
 
-const AddTodoModal: React.FC<Props> = ({
+export const AddTodoModal: React.FC<Props> = ({
     open,
     onClose,
     newContent,
@@ -93,5 +93,3 @@ const AddTodoModal: React.FC<Props> = ({
         </Modal>
     )
 }
-
-export default AddTodoModal

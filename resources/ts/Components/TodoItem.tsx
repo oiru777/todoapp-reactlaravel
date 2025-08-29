@@ -30,7 +30,14 @@ interface TodoItemProps {
     onTagClick: (tagName: string) => void
 }
 
-const TodoItem: React.FC<TodoItemProps> = ({ todo, onEdit, onDelete, onToggleDone, onToggleUnDone, onTagClick }) => {
+export const TodoItem: React.FC<TodoItemProps> = ({
+    todo,
+    onEdit,
+    onDelete,
+    onToggleDone,
+    onToggleUnDone,
+    onTagClick,
+}) => {
     const today = new Date()
     const dueDate = new Date(todo.due_date)
     const diffTime = dueDate.getTime() - today.getTime()
@@ -102,5 +109,3 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, onEdit, onDelete, onToggleDon
         </ListItem>
     )
 }
-
-export default TodoItem

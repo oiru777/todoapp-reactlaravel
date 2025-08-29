@@ -8,7 +8,7 @@ interface TodoToolbarProps {
     onHomeClick: () => void
 }
 
-const TodoToolbar: React.FC<TodoToolbarProps> = ({ onAddClick, onHomeClick }) => {
+export const TodoToolbar: React.FC<TodoToolbarProps> = ({ onAddClick, onHomeClick }) => {
     return (
         <Box
             sx={{
@@ -36,5 +36,3 @@ const TodoToolbar: React.FC<TodoToolbarProps> = ({ onAddClick, onHomeClick }) =>
         </Box>
     )
 }
-
-export default TodoToolbar

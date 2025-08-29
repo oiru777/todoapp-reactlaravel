@@ -24,7 +24,14 @@ interface TodoListProps {
     onTagClick: (tagName: string) => void
 }
 
-const TodoList: React.FC<TodoListProps> = ({ todos, onEdit, onDelete, onToggleDone, onToggleUnDone, onTagClick }) => {
+export const TodoList: React.FC<TodoListProps> = ({
+    todos,
+    onEdit,
+    onDelete,
+    onToggleDone,
+    onToggleUnDone,
+    onTagClick,
+}) => {
     const sortedTodos = [...todos].sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime())
 
     return (
@@ -43,5 +50,3 @@ const TodoList: React.FC<TodoListProps> = ({ todos, onEdit, onDelete, onToggleDo
         </List>
     )
 }
-
-export default TodoList
