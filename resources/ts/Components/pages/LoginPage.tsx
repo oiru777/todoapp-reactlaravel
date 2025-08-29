@@ -10,7 +10,7 @@ export const LoginPage: FC = () => {
     const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
     const handleLogin = async () => {
-        const url = 'http://localhost:80'
+        const url = 'http://localhost:8000'
         axios.defaults.baseURL = url
         axios.defaults.withCredentials = true
 
