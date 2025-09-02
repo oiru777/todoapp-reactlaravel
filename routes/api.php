@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 |
 */
 
+
 Route::middleware(['web'])->prefix('/v1.0')->group(function () {
     Route::post('/login',[LoginController::class, 'login']);
     Route::post('/logout',[LoginController::class, 'logout']);
@@ -27,5 +28,12 @@ Route::middleware(['web'])->prefix('/v1.0')->group(function () {
         Route::get('/user', function (Request $request) {
             return response()->json($request->user());
     });
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/test',[AccountController::class, 'test']);
+        Route::get('/user', function (Request $request) {
+            return response()->json($request->user());
+    });
+});
 });
 });
