@@ -4,12 +4,14 @@ import axios from 'axios'
 import { Box, Button, Container, CssBaseline, TextField, Typography, Avatar, Alert } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import type { LoginFormProps } from '../../types'
+import { useNavigate } from 'react-router-dom'
 
 export const LoginPage: FC<LoginFormProps> = ({ onLogin }) => {
     const [loginId, setLoginId] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const [successMessage, setSuccessMessage] = useState<string | null>(null)
+    const navigate = useNavigate()
 
     const handleLogin = async () => {
         const url = 'http://localhost:8000'
@@ -89,6 +91,9 @@ export const LoginPage: FC<LoginFormProps> = ({ onLogin }) => {
 
                     <Button fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: 2 }} onClick={handleLogin}>
                         ログイン
+                    </Button>
+                    <Button variant="text" onClick={() => navigate(`/register`)}>
+                        新規登録
                     </Button>
                 </Box>
             </Box>

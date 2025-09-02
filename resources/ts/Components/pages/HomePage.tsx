@@ -3,17 +3,8 @@ import axios from 'axios'
 import type { FC } from 'react'
 import { ShowTodoList } from './ShowTodoList'
 import { LoginPage } from './LoginPage'
-
-type User = {
-    id: number
-    name: string
-    email: string
-    // 必要に応じて他のフィールドも追加
-}
-
-type LoginFormProps = {
-    onLogin: (user: User) => void
-}
+import type { User, LoginFormProps } from '../../types'
+import { Button } from '@mui/material'
 
 export const HomePage: FC = () => {
     const [user, setUser] = useState<User | null>(null)
@@ -46,14 +37,15 @@ export const HomePage: FC = () => {
     return (
         <div>
             <h1>ようこそ、{user.name}さん！</h1>
-            <button
+            <Button
+                variant="outlined"
                 onClick={async () => {
                     await axios.post('http://localhost:8000/api/v1.0/logout', {}, { withCredentials: true })
                     setUser(null)
                 }}
             >
                 ログアウト
-            </button>
+            </Button>
             {/* ログインユーザー向け画面 */}
             <ShowTodoList />
         </div>
