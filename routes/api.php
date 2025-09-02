@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AccountController;
 use App\Http\Controllers\Api\LoginController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,11 +18,18 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::middleware(['api'])->prefix('/v1.0')->group(function () {
+Route::middleware(['web'])->prefix('/v1.0')->group(function () {
     Route::post('/login',[LoginController::class, 'login']);
     Route::post('/logout',[LoginController::class, 'logout']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/test',[AccountController::class, 'test']);
     });
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/test',[AccountController::class, 'test']);
+        Route::get('/user', function (Request $request) {
+            return response()->json($request->user());
+    });
+});
 });

@@ -10,3 +10,13 @@ export type Todo = {
     tags?: Tag[]
     done: boolean
 }
+
+export type User = {
+    id: number
+    name: string
+    email: string
+}
+
+export type LoginFormProps = {
+    onLogin: (user: User) => void
+}
