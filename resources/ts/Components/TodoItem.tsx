@@ -7,21 +7,9 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import CheckIcon from '@mui/icons-material/Check'
 import CancelIcon from '@mui/icons-material/Cancel'
+import type { Todo } from '.././types'
 
-interface Tag {
-    id: number
-    name: string
-}
-
-interface Todo {
-    id: number
-    content: string
-    due_date: string
-    tags?: Tag[]
-    done: boolean
-}
-
-interface TodoItemProps {
+type TodoItemProps = {
     todo: Todo
     onEdit: (todo: Todo) => void
     onDelete: (id: number) => void

@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTodos } from '../../hooks/useTodos'
 import type { Todo } from '../../types'
 
-interface Props {
+type Props = {
     title: string
     fetchUrl: string
     initialTag?: string

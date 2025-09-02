@@ -1,21 +1,9 @@
 import React from 'react'
 import { List } from '@mui/material'
 import { TodoItem } from './TodoItem'
+import type { Todo } from '.././types'
 
-interface Tag {
-    id: number
-    name: string
-}
-
-interface Todo {
-    id: number
-    content: string
-    due_date: string
-    tags?: Tag[]
-    done: boolean
-}
-
-interface TodoListProps {
+type TodoListProps = {
     todos: Todo[]
     onEdit: (todo: Todo) => void
     onDelete: (id: number) => void

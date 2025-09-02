@@ -5,7 +5,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { ja } from 'date-fns/locale'
 
-interface EditTodoFormProps {
+type EditTodoFormProps = {
     content: string
     dueDate: Date | null
     tags: string
