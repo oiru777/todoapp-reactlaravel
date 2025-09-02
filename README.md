@@ -1,7 +1,7 @@
 # Todoアプリ
 
 ## 使用技術
-- バックエンド: Laravel 9.46.0（環境構築: Laravel Sail）
+- バックエンド: Laravel 10.48.29（環境構築: Laravel Sail）
 - フロントエンド: React 18.2.0
 - UIライブラリ: Material UI
 - 認証: Laravel Sanctum
