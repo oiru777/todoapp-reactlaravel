@@ -13,6 +13,7 @@ class Todo extends Model
     'content',
     'due_date',
     'done',
+    'user_id',
     ];
 
     public function tags()

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Todo;
+use Illuminate\Support\Facades\Auth;
 
 class TodoController extends Controller
 {
@@ -20,6 +21,7 @@ class TodoController extends Controller
     $todo = Todo::create([
         'content' => $validated['content'],
         'due_date' => $validated['due_date'],
+        'user_id' => Auth::id(),
     ]);
 
     if (!empty($validated['tags'])) {
@@ -31,13 +33,17 @@ class TodoController extends Controller
         $todo->tags()->sync($tagIds);
     }
 
+    
+
     }
 
-    // 全てのTodoを取得して返すメソッド
+    // Todoを取得して返すメソッド
     public function index()
     {
-        // Todoのすべてのレコードを取得して変数に格納
-        $todos = Todo::with('tags')->get();
+        // Todoのを取得して変数に格納
+        $todos = Todo::with('tags')
+        ->where('user_id', Auth::id()) //自分のタスクだけ
+        ->get();
 
         // 取得したTodoのリストをJSON形式で返す
         return response()->json($todos);

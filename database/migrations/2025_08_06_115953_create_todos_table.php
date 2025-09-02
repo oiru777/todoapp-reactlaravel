@@ -13,8 +13,9 @@ return new class extends Migration
 	{
 	    Schema::create('todos', function (Blueprint $table) {
     $table->id();
+    $table->foreignId('user_id')->constrained()->onDelete('cascade');
     $table->string('content');
-    $table->date('due_date')->nullable();  // ここ追加
+    $table->date('due_date')->nullable(); 
     $table->timestamps();
     $table->boolean('done')->default(false);
     });
