@@ -4,7 +4,7 @@ import type { FC } from 'react'
 import { ShowTodoList } from './ShowTodoList'
 import { LoginPage } from './LoginPage'
 import type { User, LoginFormProps } from '../../types'
-import { Button } from '@mui/material'
+import { Button, Stack, Typography, Box } from '@mui/material'
 
 export const HomePage: FC = () => {
     const [user, setUser] = useState<User | null>(null)
@@ -35,20 +35,27 @@ export const HomePage: FC = () => {
     }
 
     return (
-        <div>
-            <h1>ようこそ、{user.name}さん！</h1>
-            <Button
-                variant="outlined"
-                onClick={async () => {
-                    await axios.post('http://localhost:8000/api/v1.0/logout', {}, { withCredentials: true })
-                    setUser(null)
-                }}
-            >
-                ログアウト
-            </Button>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
+            <Stack direction="row" spacing={2} alignItems="center" justifyContent="center">
+                <Typography variant="h6" component="h1">
+                    ようこそ、{user.name}さん！
+                </Typography>
+                <Button
+                    variant="outlined"
+                    onClick={async () => {
+                        await axios.post('http://localhost:8000/api/v1.0/logout', {}, { withCredentials: true })
+                        setUser(null)
+                    }}
+                >
+                    ログアウト
+                </Button>
+            </Stack>
+
             {/* ログインユーザー向け画面 */}
-            <ShowTodoList />
-        </div>
+            <Box sx={{ mt: 4, width: '100%', maxWidth: 600 }}>
+                <ShowTodoList />
+            </Box>
+        </Box>
     )
 }
 

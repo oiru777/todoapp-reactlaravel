@@ -135,7 +135,7 @@ export const TodoListPage: React.FC<Props> = ({ title, fetchUrl, initialTag }) =
 
     return (
         <>
-            <Box sx={{ maxWidth: 500, mx: 'auto', mb: 10, mt: 4, backgroundColor: '#ffffff' }}>
+            <Box sx={{ maxWidth: 500, mx: 'auto', mb: 10, mt: 0, backgroundColor: '#ffffff' }}>
                 <Typography variant="h4" gutterBottom>
                     {title}
                 </Typography>
