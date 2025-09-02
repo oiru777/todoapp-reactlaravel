@@ -1,5 +1,5 @@
 import React from 'react'
-import { TodoListPage } from './pages/TodoListPage'
+import { TodoListPage } from './TodoListPage'
 import { useParams } from 'react-router-dom'
 
 export const TagTodoList: React.FC = () => {

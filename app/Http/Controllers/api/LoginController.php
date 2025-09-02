@@ -22,7 +22,7 @@ class LoginController extends ApiBaseController
         ]);
         
         if (Auth::attempt($credentials)) {
-            //$request->session()->regenerate();
+            $request->session()->regenerate();
             $response  = Auth::user(); // 現在認証しているユーザーを取得
             // $id = Auth::id(); // 現在認証しているユーザーのIDを取得
             return response()->json($response);

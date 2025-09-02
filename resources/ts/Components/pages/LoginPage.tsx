@@ -3,8 +3,9 @@ import type { FC } from 'react'
 import axios from 'axios'
 import { Box, Button, Container, CssBaseline, TextField, Typography, Avatar, Alert } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import type { LoginFormProps } from '../../types'
 
-export const LoginPage: FC = () => {
+export const LoginPage: FC<LoginFormProps> = ({ onLogin }) => {
     const [loginId, setLoginId] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -23,6 +24,7 @@ export const LoginPage: FC = () => {
                 email: loginId,
                 password: password,
             })
+            onLogin(res.data)
 
             console.log('==login success==', res)
             setErrorMessage(null)
