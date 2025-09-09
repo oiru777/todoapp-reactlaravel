@@ -92,8 +92,11 @@ export const LoginPage: FC<LoginFormProps> = ({ onLogin }) => {
                     <Button fullWidth variant="contained" color="primary" sx={{ mt: 3, mb: 2 }} onClick={handleLogin}>
                         ログイン
                     </Button>
-                    <Button variant="text" onClick={() => navigate(`/register`)}>
+                    <Button fullWidth variant="outlined" sx={{ mt: 1 }} onClick={() => navigate(`/register`)}>
                         新規登録
+                    </Button>
+                    <Button variant="text" onClick={() => navigate(`/forgotpassword`)}>
+                        パスワード忘れた方はこちら
                     </Button>
                 </Box>
             </Box>

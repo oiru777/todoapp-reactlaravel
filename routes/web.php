@@ -35,3 +35,7 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 Route::get('{any}', function () {
     return view('app');
 })->where('any','.*');
+
+Route::get('/verified', function () {
+    return 'メール認証済みです！';
+});

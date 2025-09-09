@@ -5,6 +5,9 @@ import { ShowTodoList } from './Components/pages/ShowTodoList'
 import { TagTodoList } from './Components/pages/TagTodoList'
 import { HomePage } from './Components/pages/HomePage'
 import { RegisterPage } from './Components/pages/RegisterPage'
+import { ForgotPassword } from './Components/ForgotPassword'
+import { ResetPasswordPage } from './Components/ResetPasswordPage'
+import { Verified } from './Components/Verified'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { useState } from 'react'
 
@@ -21,6 +24,9 @@ const App: React.FC = () => {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/tag/:tagName" element={<TagTodoList />} />
                     <Route path="/register" element={<RegisterPage onLogin={handleLogin} />} />
+                    <Route path="/forgotpassword" element={<ForgotPassword />} />
+                    <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+                    <Route path="/Verified" element={<Verified />} />
                 </Routes>
             </div>
         </Router>
