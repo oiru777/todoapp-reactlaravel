@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class RegisterController extends Controller
 {
@@ -16,7 +16,7 @@ class RegisterController extends Controller
         $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed', // パスワード確認用
+            'password' => 'required|string|min:6|confirmed',
         ]);
 
         $user = User::create([
@@ -25,8 +25,21 @@ class RegisterController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        Auth::login($user); // 登録後、自動ログイン
+        // 自動ログイン
+        Auth::login($user);
 
+        // メール認証通知を送る
+        event(new Registered($user));
+
+
+        // 認証されてなければログアウトしてフロントに知らせる
+        if (! $user->hasVerifiedEmail()) {
+            return response()->json([
+                'message' => '確認メールを送信しました。メールを確認してください。'
+            ], 202); // ← ステータス202：処理完了だが認証未完了
+        }
+
+        // 認証済みならログイン継続
         return response()->json($user);
     }
 }
